@@ -1,0 +1,5 @@
+discord.py
+ccxt
+pandas
+ta
+python-dotenv
