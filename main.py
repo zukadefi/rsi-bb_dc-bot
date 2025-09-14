@@ -11,7 +11,7 @@ from discord import app_commands
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 USER_ID = int(os.getenv("USER_ID"))
-GUILD_ID = int(os.getenv("GUILD_ID"))  # ID do servidor onde o slash command vai aparecer
+GUILD_ID = int(os.getenv("GUILD_ID"))  # ID do servidor onde o /command vai aparecer
 CHANNEL_ID = int(os.getenv("CHANNEL_ID"))  # ID do canal onde quer enviar alertas
 
 # Configura Discord
@@ -29,7 +29,7 @@ limit = 100
 RSI_OVERBOUGHT = 70
 RSI_OVERSOLD = 30
 
-# ---------------- Monitoramento de indicadores ---------------- #
+# Monitoramento de indicadores 
 async def checar_ativo(symbol, user, channel):
     try:
         ohlcv = exchange.fetch_ohlcv(symbol, timeframe=timeframe, limit=limit)
@@ -66,7 +66,7 @@ async def monitor_indicadores():
         await asyncio.gather(*(checar_ativo(symbol, user, channel) for symbol in ativos))
         await asyncio.sleep(900)
 
-# ---------------- Comando /fetchprice ---------------- #
+# Comando /fetchprice
 @tree.command(name="fetchprice", description="Retorna o preço atual de um ativo", guild=discord.Object(id=GUILD_ID))
 @app_commands.describe(symbol="Símbolo do ativo, ex: BTC/USDT")
 async def fetchprice(interaction: discord.Interaction, symbol: str):
@@ -77,7 +77,7 @@ async def fetchprice(interaction: discord.Interaction, symbol: str):
     except Exception as e:
         await interaction.response.send_message(f"❌ Não foi possível buscar o preço de {symbol.upper()}. Erro: {e}")
 
-# ---------------- Eventos ---------------- #
+# Eventos
 @client.event
 async def on_ready():
     await tree.sync(guild=discord.Object(id=GUILD_ID))  # sincroniza comandos slash
@@ -95,4 +95,3 @@ async def on_ready():
     client.loop.create_task(monitor_indicadores())
 
 client.run(TOKEN)
-# ---------------- Fim do código ---------------- #
